@@ -24,4 +24,8 @@ label_senha.place(x=50, y=150)
 text_senha = Entry(tela_login, font='Arial 12', show='*')
 text_senha.place(width=200,x=50, y=170)
 
+# configurando o botão login
+button_login = Button(text='Login', font='Times 10', relief='groove', command=lambda: Login(text_usuario.get(), text_senha.get()))
+button_login.place(width=200,x=50, y=220)
+
 tela_login.mainloop()
