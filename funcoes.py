@@ -21,11 +21,16 @@ class Login():
     def __init__(self, username, password):
         self.username = username
         self.password = password
+        # pega cada lista com usuario e login e passa uma vericação
         for user in logins:
             if self.username == user[0] and self.password == user[1]:
                 messagebox.showinfo('Login', 'Login successful')
-                break           
+                login = 1
+                break
+            # caso o login não funcione a função vai armazenar um valor, para aparecer a mensagem de login falhado somente no final, já que a verificação teste todos.           
             else:
+                login = 0
                 continue
-            
+        if login == 0:
+            messagebox.showinfo('Login', 'Login failed')
 
