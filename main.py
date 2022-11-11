@@ -12,10 +12,48 @@ class Main_tela():
         self.nome = nome
         self.nome = Tk()
         self.nome.title('Requisição de abastecimento')
-        Posicao(self.nome, 320, 300)
-        # label e botão do ID, que irá buscar automático
-        self.id = Button(self.nome, text='Nova Requisição', font= 'Times 15')
-        self.id.place(width=180,x=70, y=20)
+        Posicao(self.nome, 320, 200)
+        # botão para nova requisição
+        self.new_req = Button(self.nome, text='Nova Requisição', font= 'Times 15', command=lambda: Nova_req_tela('nova req') and self.nome.destroy())
+        self.new_req.place(width=180,x=70, y=20)
+        # botão para atualizar uma requisição
+        self.att_req = Button(self.nome, text='Atualizar requisição', font= 'Times 15', command=lambda: Att_req_tela('att req') and self.nome.destroy())
+        self.att_req.place(width=180,x=70, y=80)
+        # botão para gerar relatório
+        self.rel_req = Button(self.nome, text='Relatório', font= 'Times 15', command=lambda: Relatorio_req_tela('rel req') and self.nome.destroy())
+        self.rel_req.place(width=180, x=70, y=140)
+        
+
+# ----------------------------------------------------------------------------------------------------
+# tela nova requisição
+class Nova_req_tela():
+    def __init__(self, nome):
+        self.nome = nome
+        self.nome = Tk()
+        self.nome.title('Requisição de abastecimento')
+        Posicao(self.nome, 500, 500)
+
+
+# ----------------------------------------------------------------------------------------------------
+# tela atualizar requisição
+class Att_req_tela():
+    def __init__(self, nome):
+        self.nome = nome
+        self.nome = Tk()
+        self.nome.title('Requisição de abastecimento')
+        Posicao(self.nome, 500, 500)
+
+
+# ----------------------------------------------------------------------------------------------------
+# tela relatório
+class Relatorio_req_tela():
+    def __init__(self, nome):
+        self.nome = nome
+        self.nome = Tk()
+        self.nome.title('Requisição de abastecimento')
+        Posicao(self.nome, 500, 500)
+
+
 
 # ----------------------------------------------------------------------------------------------------
 # funções
