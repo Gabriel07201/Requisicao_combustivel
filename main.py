@@ -3,7 +3,7 @@ from tkinter import messagebox
 
 # ----------------------------------------------------------------------------------------------------
 # logins
-logins = [['Admin', 'Admin'], ['Gabriel', '04220801']]
+logins = [['Admin', 'Admin'], ['Gabriel', '04220801'], ['3', '3']]
 
 # ----------------------------------------------------------------------------------------------------
 # tela principal
@@ -14,13 +14,13 @@ class Main_tela():
         self.nome.title('Requisição de abastecimento')
         Posicao(self.nome, 320, 200)
         # botão para nova requisição
-        self.new_req = Button(self.nome, text='Nova Requisição', font= 'Times 15', command=lambda: Nova_req_tela('nova req') and self.nome.destroy())
+        self.new_req = Button(self.nome, text='Nova Requisição', font= 'Times 15', command=lambda: Nova_req_tela('nova req') and self.nome.destroy(), relief='groove')
         self.new_req.place(width=180,x=70, y=20)
         # botão para atualizar uma requisição
-        self.att_req = Button(self.nome, text='Atualizar requisição', font= 'Times 15', command=lambda: Att_req_tela('att req') and self.nome.destroy())
+        self.att_req = Button(self.nome, text='Atualizar requisição', font= 'Times 15', command=lambda: Att_req_tela('att req') and self.nome.destroy(), relief='groove')
         self.att_req.place(width=180,x=70, y=80)
         # botão para gerar relatório
-        self.rel_req = Button(self.nome, text='Relatório', font= 'Times 15', command=lambda: Relatorio_req_tela('rel req') and self.nome.destroy())
+        self.rel_req = Button(self.nome, text='Relatório', font= 'Times 15', command=lambda: Relatorio_req_tela('rel req') and self.nome.destroy(), relief='groove')
         self.rel_req.place(width=180, x=70, y=140)
         
 
@@ -30,9 +30,12 @@ class Nova_req_tela():
     def __init__(self, nome):
         self.nome = nome
         self.nome = Tk()
-        self.nome.title('Requisição de abastecimento')
+        self.nome.title('Nova Requisição')
         Posicao(self.nome, 500, 500)
-
+        Menu_superior(self.nome)
+        # label e box para o id
+        self.label_id = Label(self.nome, text='ID', font= 'Times 10')
+        self.label_id.place(x=10, y=10)
 
 # ----------------------------------------------------------------------------------------------------
 # tela atualizar requisição
@@ -40,8 +43,9 @@ class Att_req_tela():
     def __init__(self, nome):
         self.nome = nome
         self.nome = Tk()
-        self.nome.title('Requisição de abastecimento')
+        self.nome.title('Atualizar Requisição')
         Posicao(self.nome, 500, 500)
+        Menu_superior(self.nome)
 
 
 # ----------------------------------------------------------------------------------------------------
@@ -50,9 +54,9 @@ class Relatorio_req_tela():
     def __init__(self, nome):
         self.nome = nome
         self.nome = Tk()
-        self.nome.title('Requisição de abastecimento')
+        self.nome.title('Relatório')
         Posicao(self.nome, 500, 500)
-
+        Menu_superior(self.nome)
 
 
 # ----------------------------------------------------------------------------------------------------
@@ -70,6 +74,20 @@ class Posicao():
         master.geometry("%dx%d+%d+%d" % (self.largura, self.altura, self.posx, self.posy - 70))
         master.resizable(0,0)
 
+
+# Menu superior
+class Menu_superior():
+    def __init__(self, nome):
+        self.cascade = Menu(nome, tearoff=0)
+        self.cascade.add_command(label='Início', command= lambda: Main_tela("main_tela") and self.nome.destroy())
+        self.cascade.add_command(label='Nova Requisição', command=lambda: Nova_req_tela('nova req') and self.nome.destroy())
+        self.cascade.add_command(label='Atualizar Requisição', command=lambda: Att_req_tela('att req') and self.nome.destroy())
+        self.cascade.add_command(label='Relatório', command=lambda: Relatorio_req_tela('rel req') and self.nome.destroy())
+        self.menu = Menu(nome, tearoff=0)        
+        self.menu.add_cascade(label='Menu', menu=self.cascade)
+        self.menu.add_command(label='Sair', command= lambda: self.nome.destroy())
+        self.nome = nome
+        self.nome.configure(menu=self.menu)
 
 
 # ----------------------------------------------------------------------------------------------------
