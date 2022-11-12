@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
+from tkinter import ttk
 
 # ----------------------------------------------------------------------------------------------------
 # logins
@@ -34,8 +35,16 @@ class Nova_req_tela():
         Posicao(self.nome, 500, 500)
         Menu_superior(self.nome)
         # label e box para o id
-        self.label_id = Label(self.nome, text='ID', font= 'Times 10')
+        self.label_id = Label(self.nome, text='ID', font= 'Times 15')
         self.label_id.place(x=10, y=10)
+        self.message_id = Message(self.nome, font='Arial 17', text='1', relief='sunken')
+        self.message_id.place(x=10, y=32)
+        # combo_box com o solicitante do abastecimento
+        self.label_solicitante = Label(self.nome, font='Times 15', text='Solicitante')
+        self.label_solicitante.place(x=90, y=10)
+        self.combo_box_solicitante = ttk.Combobox(self.nome,font='Arial 17', state="readonly")
+        self.combo_box_solicitante['values'] = ['Gemerson', 'Adilson', 'Gabriel']
+        self.combo_box_solicitante.place(x=90, y=32)
 
 # ----------------------------------------------------------------------------------------------------
 # tela atualizar requisição
