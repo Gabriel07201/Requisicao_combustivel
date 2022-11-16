@@ -43,6 +43,7 @@ class Nova_req_tela():
         self.label_solicitante = Label(self.nome, font='Times 12', text='Solicitante')
         self.label_solicitante.place(x=90, y=10)
         self.combo_box_solicitante = ttk.Combobox(self.nome,font='Arial 15', state="readonly")
+        self.combo_box_solicitante.focus()
         self.combo_box_solicitante['values'] = ['Gemerson', 'Adilson', 'Gabriel']
         self.combo_box_solicitante.place(x=90, y=32)
         # label e combo box motorista
