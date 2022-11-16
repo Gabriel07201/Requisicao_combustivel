@@ -66,14 +66,24 @@ class Nova_req_tela():
         self.label_preco = Label(self.nome, font='Times 12', text='Preço Unitário')
         self.label_preco.place(x=580, y=90)
         self.entry_preco = Entry(self.nome, font='Arial 15')
+        # procurar alguma maneira de calcular o valor automático usando a quantidade e o valor unitário
+        def float_number(event):
+            try:
+                number = float(self.entry_preco.get())
+                self.message_total.config(text=number)
+            except:
+                self.message_total.config(text='Valores inválidos')
+        self.entry_preco.bind("<Return>", float_number)
         self.entry_preco.place(x=580, y=112)
         # label e message total
         self.label_total = Label(self.nome, font='Times 12', text='Total')
         self.label_total.place(x=10, y=182)
-        self.message_total = Message(self.nome, font='Arial 15', text=0)
-        self.message_total.place(x=10, y=202)
-        # procurar alguma maneira de calcular o valor automático usando a quantidade e o valor unitário
 
+        self.message_total = Label(self.nome, font='Arial 15', text=0)
+        self.message_total.place(x=10, y=202)
+
+
+        
 # ----------------------------------------------------------------------------------------------------
 # tela atualizar requisição
 class Att_req_tela():
