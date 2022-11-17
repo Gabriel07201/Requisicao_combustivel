@@ -1,6 +1,16 @@
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
+from datetime import date
+# biblioteca penas para conversão de vírgula para ponto
+from locale import atof, setlocale, LC_NUMERIC
+
+# ----------------------------------------------------------------------------------------------------
+# configs
+setlocale(LC_NUMERIC, '')
+today = date.today()
+today = today.strftime("%d/%m/%Y")
+
 
 # ----------------------------------------------------------------------------------------------------
 # logins
@@ -36,52 +46,80 @@ class Nova_req_tela():
         Menu_superior(self.nome)
         # label e box para o id
         self.label_id = Label(self.nome, text='ID', font= 'Times 12')
-        self.label_id.place(x=10, y=10)
-        self.message_id = Message(self.nome, font='Arial 15', text='1', relief='sunken')
-        self.message_id.place(x=10, y=32)
+        self.message_id = Message(self.nome, font='Arial 15', text='1', relief='sunken', bg='white')
         # combo_box com o solicitante do abastecimento
         self.label_solicitante = Label(self.nome, font='Times 12', text='Solicitante')
-        self.label_solicitante.place(x=90, y=10)
         self.combo_box_solicitante = ttk.Combobox(self.nome,font='Arial 15', state="readonly")
         self.combo_box_solicitante.focus()
         self.combo_box_solicitante['values'] = ['Gemerson', 'Adilson', 'Gabriel']
-        self.combo_box_solicitante.place(x=90, y=32)
         # label e combo box motorista
         self.label_motorista = Label(self.nome, font='Times 12', text='Motorista')
-        self.label_motorista.place(x=370, y=10)
         self.combo_box_motorista = ttk.Combobox(self.nome, font='Arial 15', state="readonly")
         self.combo_box_motorista['values'] = ['Gemerson', 'Adilson', 'Gabriel']
-        self.combo_box_motorista.place(x=370, y=32)
         # label e combo box categoria
         self.label_categoria = Label(self.nome, font='Times 12', text='Categoria')
-        self.label_categoria.place(x=10, y=90)
         self.combo_box_categoria = ttk.Combobox(self.nome, font='Arial 15', state='readonly')
         self.combo_box_categoria['values'] = ['Gasolina', 'Etanol', 'Filtro de óleo', 'Filtro de ar']
-        self.combo_box_categoria.place(x=10, y=112)
         # label e entry quantidade
         self.label_quantidade = Label(self.nome, font='Times 12', text='Quantidade')
-        self.label_quantidade.place(x=320, y=90)
         self.entry_quantidade = Entry(self.nome, font='Arial 15')
-        self.entry_quantidade.place(x=320, y=112)
         # label e entry preço unitário
         self.label_preco = Label(self.nome, font='Times 12', text='Preço Unitário')
-        self.label_preco.place(x=580, y=90)
         self.entry_preco = Entry(self.nome, font='Arial 15')
-        # procurar alguma maneira de calcular o valor automático usando a quantidade e o valor unitário
+        # função para buscar o valor digitado e com isso fazer a conversão para o tipo float, independente se o valor for passado com vírgula ou ponto.
         def float_number(event):
             try:
-                number = float(self.entry_preco.get())
-                self.message_total.config(text=number)
+                if ',' in self.entry_quantidade.get():
+                    number_quantidade = atof(self.entry_quantidade.get())
+                if ',' in self.entry_preco.get():
+                    number_preco = atof(self.entry_preco.get())
+                if '.' in self.entry_preco.get():
+                    number_preco = float(self.entry_preco.get())
+                if '.' in self.entry_quantidade.get():
+                    number_quantidade = float(self.entry_quantidade.get())
+                if ',' not in self.entry_quantidade.get():
+                    number_quantidade = float(self.entry_quantidade.get())
+                if ',' not in self.entry_preco.get():
+                    number_preco = float(self.entry_preco.get())
+                self.message_total.config(text=number_preco*number_quantidade)
             except:
                 self.message_total.config(text='Valores inválidos')
-        self.entry_preco.bind("<Return>", float_number)
-        self.entry_preco.place(x=580, y=112)
+        self.entry_preco.bind("<Tab>", float_number)
         # label e message total
         self.label_total = Label(self.nome, font='Times 12', text='Total')
-        self.label_total.place(x=10, y=182)
 
-        self.message_total = Label(self.nome, font='Arial 15', text=0)
-        self.message_total.place(x=10, y=202)
+        self.message_total = Label(self.nome, font='Arial 15', text=0, relief='sunken', bg='white')
+        # label data
+        self.label_data = Label(self.nome, font='Times 12', text='Data')
+        self.data_now = Label(self.nome, font='Arial 15', text=today, relief='sunken')
+        # label maior para observação
+        self.label_observacao = Label(self.nome, font='Times 12', text='Obersação')
+        self.campo_observacao = Text(self.nome, font='Arial 10', relief='sunken', bg='white')
+
+        # -------------------------------
+        # posicionamento do front
+        self.label_id.place(x=10, y=10)
+        obrigatorio(self.nome, 10, 10)
+        self.message_id.place(x=10, y=32)
+        self.label_solicitante.place(x=90, y=10)
+        obrigatorio(self.nome, 137, 10)
+        self.combo_box_solicitante.place(x=90, y=32)
+        self.label_motorista.place(x=370, y=10)
+        obrigatorio(self.nome, 415, 10)
+        self.combo_box_motorista.place(x=370, y=32)
+        self.label_categoria.place(x=10, y=90)
+        obrigatorio(self.nome, 55, 90)
+        self.combo_box_categoria.place(x=10, y=112)
+        self.label_quantidade.place(x=320, y=90)
+        self.label_preco.place(x=580, y=90)
+        self.entry_quantidade.place(x=320, y=112)
+        self.entry_preco.place(x=580, y=112)
+        self.label_total.place(x=10, y=182)
+        self.message_total.place(x=10, y=202, width=150)
+        self.label_data.place(x=280, y=182)
+        self.data_now.place(x=280, y=202)
+        self.label_observacao.place(x=10, y=270)
+        self.campo_observacao.place(x=10, y=292, width=370, height=200)
 
 
         
@@ -137,6 +175,9 @@ class Menu_superior():
         self.nome = nome
         self.nome.configure(menu=self.menu)
 
+def obrigatorio(master, posx, posy):
+    obg = Message(master, text='*', fg='red', justify=LEFT, anchor=SW)
+    obg.place(x=posx+18, y=posy-3)
 
 # ----------------------------------------------------------------------------------------------------
 # criando tela de login
