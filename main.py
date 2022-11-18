@@ -42,7 +42,7 @@ class Nova_req_tela():
         self.nome = nome
         self.nome = Tk()
         self.nome.title('Nova Requisição')
-        Posicao(self.nome, 700, 500)
+        Posicao(self.nome, 480, 500)
         Menu_superior(self.nome)
         # label e box para o id
         self.label_id = Label(self.nome, text='ID', font= 'Times 12')
@@ -69,20 +69,26 @@ class Nova_req_tela():
         # função para buscar o valor digitado e com isso fazer a conversão para o tipo float, independente se o valor for passado com vírgula ou ponto.
         def float_number(event):
             try:
-                if ',' in self.entry_quantidade.get():
-                    number_quantidade = atof(self.entry_quantidade.get())
-                if ',' in self.entry_preco.get():
-                    number_preco = atof(self.entry_preco.get())
-                if '.' in self.entry_preco.get():
-                    number_preco = float(self.entry_preco.get())
-                if '.' in self.entry_quantidade.get():
-                    number_quantidade = float(self.entry_quantidade.get())
-                if ',' not in self.entry_quantidade.get():
-                    number_quantidade = float(self.entry_quantidade.get())
-                if ',' not in self.entry_preco.get():
-                    number_preco = float(self.entry_preco.get())
-                self.message_total.config(text=number_preco*number_quantidade)
-            except:
+                if self.entry_preco.get() == '' or self.entry_quantidade.get() == '':
+                    print('preco e quant')
+                    number_preco = 0
+                    number_quantidade = 0
+                else:
+                    if ',' in self.entry_quantidade.get():
+                        number_quantidade = atof(self.entry_quantidade.get())
+                    if ',' in self.entry_preco.get():
+                        number_preco = atof(self.entry_preco.get())
+                    if '.' in self.entry_preco.get():
+                        number_preco = float(self.entry_preco.get())
+                    if '.' in self.entry_quantidade.get():
+                        number_quantidade = float(self.entry_quantidade.get())
+                    if ',' not in self.entry_quantidade.get():
+                        number_quantidade = float(self.entry_quantidade.get())
+                    if ',' not in self.entry_preco.get():
+                        number_preco = float(self.entry_preco.get())
+                self.message_total.config(text=round(number_preco*number_quantidade, 2))
+            except Exception as e:
+                # usar o exception depois pra registrar possíveis bugs
                 self.message_total.config(text='Valores inválidos')
         self.entry_preco.bind("<Tab>", float_number)
         # label e message total
@@ -91,35 +97,37 @@ class Nova_req_tela():
         self.message_total = Label(self.nome, font='Arial 15', text=0, relief='sunken', bg='white')
         # label data
         self.label_data = Label(self.nome, font='Times 12', text='Data')
-        self.data_now = Label(self.nome, font='Arial 15', text=today, relief='sunken')
+        self.data_now = Label(self.nome, font='Arial 15', text=today, relief='sunken', bg='white')
         # label maior para observação
         self.label_observacao = Label(self.nome, font='Times 12', text='Obersação')
-        self.campo_observacao = Text(self.nome, font='Arial 10', relief='sunken', bg='white')
+        self.campo_observacao = Text(self.nome, font='Arial 12', relief='sunken', bg='white')
 
         # -------------------------------
         # posicionamento do front
         self.label_id.place(x=10, y=10)
         obrigatorio(self.nome, 10, 10)
-        self.message_id.place(x=10, y=32)
+        self.message_id.place(x=10, y=32, width=70, height=30)
         self.label_solicitante.place(x=90, y=10)
         obrigatorio(self.nome, 137, 10)
-        self.combo_box_solicitante.place(x=90, y=32)
-        self.label_motorista.place(x=370, y=10)
-        obrigatorio(self.nome, 415, 10)
-        self.combo_box_motorista.place(x=370, y=32)
+        self.combo_box_solicitante.place(x=90, y=32, height=30, width=130)
+        self.label_motorista.place(x=250, y=10)
+        obrigatorio(self.nome, 295, 10)
+        self.combo_box_motorista.place(x=250, y=32, height=30, width=210)
         self.label_categoria.place(x=10, y=90)
         obrigatorio(self.nome, 55, 90)
-        self.combo_box_categoria.place(x=10, y=112)
-        self.label_quantidade.place(x=320, y=90)
-        self.label_preco.place(x=580, y=90)
-        self.entry_quantidade.place(x=320, y=112)
-        self.entry_preco.place(x=580, y=112)
-        self.label_total.place(x=10, y=182)
-        self.message_total.place(x=10, y=202, width=150)
-        self.label_data.place(x=280, y=182)
-        self.data_now.place(x=280, y=202)
+        self.combo_box_categoria.place(x=10, y=112, height=30, width=210)
+        self.label_quantidade.place(x=250, y=90)
+        self.entry_quantidade.place(x=250, y=112, height=30, width=210)
+        self.label_preco.place(x=10, y=160)
+        self.entry_preco.place(x=45, y=182, width=175, height=30)
+        label_moeda(self.nome, 10, 182, 25)
+        self.label_total.place(x=250, y=160)
+        self.message_total.place(x=285, y=182, width=175, height=30)
+        label_moeda(self.nome, 250, 182, 25)
+        self.label_data.place(x=10, y=215)
+        self.data_now.place(x=10, y=237)
         self.label_observacao.place(x=10, y=270)
-        self.campo_observacao.place(x=10, y=292, width=370, height=200)
+        self.campo_observacao.place(x=10, y=292, width=460, height=150)
 
 
         
@@ -178,6 +186,10 @@ class Menu_superior():
 def obrigatorio(master, posx, posy):
     obg = Message(master, text='*', fg='red', justify=LEFT, anchor=SW)
     obg.place(x=posx+18, y=posy-3)
+
+def label_moeda(master, posx, posy, width):
+    label_moeda = Label(master, text='R$', font='Arial 15')
+    label_moeda.place(x=posx, y=posy, width=width)
 
 # ----------------------------------------------------------------------------------------------------
 # criando tela de login
