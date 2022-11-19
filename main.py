@@ -70,7 +70,6 @@ class Nova_req_tela():
         def float_number(event):
             try:
                 if self.entry_preco.get() == '' or self.entry_quantidade.get() == '':
-                    print('preco e quant')
                     number_preco = 0
                     number_quantidade = 0
                 else:
@@ -101,6 +100,10 @@ class Nova_req_tela():
         # label maior para observação
         self.label_observacao = Label(self.nome, font='Times 12', text='Obersação')
         self.campo_observacao = Text(self.nome, font='Arial 12', relief='sunken', bg='white')
+        # botao para salvar, no salvamento teremos algumas funções
+        self.button_save = Button(self.nome, font='Times 12', text='Salvar', relief='raised', borderwidth=3)
+        # botao para nova requisição, que irá limpar a tela e atualizar algumas informações
+        self.button_new = Button(self.nome, font='Times 12', text='Nova', relief='raised', borderwidth=3)
 
         # -------------------------------
         # posicionamento do front
@@ -128,6 +131,8 @@ class Nova_req_tela():
         self.data_now.place(x=10, y=237)
         self.label_observacao.place(x=10, y=270)
         self.campo_observacao.place(x=10, y=292, width=460, height=150)
+        self.button_save.place(x=10, y=450, width=70, height=30)
+        self.button_new.place(x=90, y=450, width=70, height=30)
 
 
         
