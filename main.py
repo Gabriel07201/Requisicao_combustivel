@@ -4,6 +4,9 @@ from tkinter import ttk
 from datetime import date
 # biblioteca penas para conversão de vírgula para ponto
 from locale import atof, setlocale, LC_NUMERIC
+import pandas as pd
+# banco de dados feito em excel usando o pandas
+banco_de_dados = pd.read_excel('banco_de_dados.xlsx', engine='openpyxl')
 
 # ----------------------------------------------------------------------------------------------------
 # configs
@@ -46,7 +49,7 @@ class Nova_req_tela():
         Menu_superior(self.nome)
         # label e box para o id
         self.label_id = Label(self.nome, text='ID', font= 'Times 12')
-        self.message_id = Message(self.nome, font='Arial 15', text='1', relief='sunken', bg='white')
+        self.message_id = Message(self.nome, font='Arial 15', text=(banco_de_dados.shape[0] + 1), relief='sunken', bg='white')
         # combo_box com o solicitante do abastecimento
         self.label_solicitante = Label(self.nome, font='Times 12', text='Solicitante')
         self.combo_box_solicitante = ttk.Combobox(self.nome,font='Arial 15', state="readonly")
@@ -98,10 +101,33 @@ class Nova_req_tela():
         self.label_data = Label(self.nome, font='Times 12', text='Data')
         self.data_now = Label(self.nome, font='Arial 15', text=today, relief='sunken', bg='white')
         # label maior para observação
-        self.label_observacao = Label(self.nome, font='Times 12', text='Obersação')
+        self.label_observacao = Label(self.nome, font='Times 12', text='Observação')
         self.campo_observacao = Text(self.nome, font='Arial 12', relief='sunken', bg='white')
         # botao para salvar, no salvamento teremos algumas funções
-        self.button_save = Button(self.nome, font='Times 12', text='Salvar', relief='raised', borderwidth=3)
+        # função para salvar as informações 
+        def Save_new_req(self):
+            dados = [[]]
+            dados[0].append(self.message_id['text'])
+            if self.combo_box_solicitante.get() == '':
+                messagebox.showinfo('Solicitante', 'Informe o solicitante')
+            else:
+                dados[0].append(self.combo_box_solicitante.get())
+            if self.combo_box_motorista.get() == '':
+                messagebox.showinfo('Motorista', 'Informe o motorista')
+            else:
+                dados[0].append(self.combo_box_motorista.get())
+            if self.combo_box_categoria.get() == '':
+                messagebox.showinfo('Categoria', 'Informe a categoria')
+            else:
+                dados[0].append(self.combo_box_categoria.get())
+            dados[0].append(self.entry_quantidade.get())
+            dados[0].append(self.entry_preco.get())
+            dados[0].append(self.message_total['text'])
+            dados[0].append(self.data_now['text'])
+            dados[0].append(self.campo_observacao.get(1.0, "end-1c"))
+            if len(dados[0]) == 9:
+                dados = pd.DataFrame(dados, columns=['ID', 'Solicitante', 'Motorista', 'Categoria', 'Quantidade', 'Valor Unitário', 'Total', 'Data', 'Observações'])
+        self.button_save = Button(self.nome, font='Times 12', text='Salvar', relief='raised', borderwidth=3, command= lambda: Save_new_req(self))
         # botao para nova requisição, que irá limpar a tela e atualizar algumas informações
         self.button_new = Button(self.nome, font='Times 12', text='Nova', relief='raised', borderwidth=3)
 
@@ -195,6 +221,8 @@ def obrigatorio(master, posx, posy):
 def label_moeda(master, posx, posy, width):
     label_moeda = Label(master, text='R$', font='Arial 15')
     label_moeda.place(x=posx, y=posy, width=width)
+
+
 
 # ----------------------------------------------------------------------------------------------------
 # criando tela de login
