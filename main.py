@@ -5,8 +5,6 @@ from datetime import date
 # biblioteca penas para conversão de vírgula para ponto
 from locale import atof, setlocale, LC_NUMERIC
 import pandas as pd
-# banco de dados feito em excel usando o pandas
-banco_de_dados = pd.read_excel('banco_de_dados.xlsx', engine='openpyxl')
 
 # ----------------------------------------------------------------------------------------------------
 # configs
@@ -42,6 +40,8 @@ class Main_tela():
 # tela nova requisição
 class Nova_req_tela():
     def __init__(self, nome):
+        # banco de dados feito em excel, onde será salvo os dados
+        self.banco_de_dados = pd.read_excel('banco_de_dados.xlsx', engine='openpyxl')
         self.nome = nome
         self.nome = Tk()
         self.nome.title('Nova Requisição')
@@ -49,7 +49,7 @@ class Nova_req_tela():
         Menu_superior(self.nome)
         # label e box para o id
         self.label_id = Label(self.nome, text='ID', font= 'Times 12')
-        self.message_id = Message(self.nome, font='Arial 15', text=(banco_de_dados.shape[0] + 1), relief='sunken', bg='white')
+        self.message_id = Message(self.nome, font='Arial 15', text=(self.banco_de_dados.shape[0] + 1), relief='sunken', bg='white')
         # combo_box com o solicitante do abastecimento
         self.label_solicitante = Label(self.nome, font='Times 12', text='Solicitante')
         self.combo_box_solicitante = ttk.Combobox(self.nome,font='Arial 15', state="readonly")
@@ -126,10 +126,16 @@ class Nova_req_tela():
             dados[0].append(self.data_now['text'])
             dados[0].append(self.campo_observacao.get(1.0, "end-1c"))
             if len(dados[0]) == 9:
-                dados = pd.DataFrame(dados, columns=['ID', 'Solicitante', 'Motorista', 'Categoria', 'Quantidade', 'Valor Unitário', 'Total', 'Data', 'Observações'])
+                dados = pd.DataFrame(dados, columns=['ID', 'Solicitante', 'Motorista', 'Categoria', 'Quantidade', 'Preço Unitário', 'Total', 'Data', 'Observação'])
+                banco_de_dados_to_save = self.banco_de_dados.append(dados)
+                banco_de_dados_to_save.to_excel("banco_de_dados.xlsx", index=False)
         self.button_save = Button(self.nome, font='Times 12', text='Salvar', relief='raised', borderwidth=3, command= lambda: Save_new_req(self))
         # botao para nova requisição, que irá limpar a tela e atualizar algumas informações
-        self.button_new = Button(self.nome, font='Times 12', text='Nova', relief='raised', borderwidth=3)
+        # botão para dar um refresh na tela e cadastrar novos dados
+        def refresh(self):
+            self.nome.destroy()
+            self.__init__(nome)
+        self.button_new = Button(self.nome, font='Times 12', text='Nova', relief='raised', borderwidth=3, command=lambda: refresh(self))
 
         # -------------------------------
         # posicionamento do front
