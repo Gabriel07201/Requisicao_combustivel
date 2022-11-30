@@ -186,22 +186,18 @@ class Att_req_tela():
             self.banco = pd.read_excel(r'C:\Users\Gabriel\Desktop\Programação\Requisicao_combustivel\banco_de_dados.xlsx')
             self.selecao = self.banco['ID'] == int(id)
             self.consulta = self.banco[self.selecao]
-            self.solicitante = self.consulta['Solicitante']
-            print(self.solicitante)
-            print(type(self.solicitante))
-            print(str(self.solicitante))
-            if str(self.solicitante) == 'Gemerson':
-                self.combo_box_solicitante.current(0)
-            if str(self.solicitante) == 'Adilson':
-                self.combo_box_solicitante.current(1)
-            if str(self.solicitante) == 'Gabriel':
-                self.combo_box_solicitante.current(2)
+            self.solicitante = list(self.consulta['Solicitante'])
+            if str(self.solicitante[0]) == 'Gemerson':
+                self.message_solicitante.configure(text='Gemerson')
+            if str(self.solicitante[0]) == 'Adilson':
+                self.message_solicitante.configure(text='Adilson')
+            if str(self.solicitante[0]) == 'Gabriel':
+                self.message_solicitante.configure(text='Gabriel')
         self.label_id = Label(self.nome, text='ID', font= 'Times 12')
         self.entry_id = Entry(self.nome, font='Arial 15', relief='sunken')
         self.button_consultar = Button(self.nome, text='Consultar', font= 'Times 12', relief='raised', borderwidth=3, command=lambda: Consulta_banco(self.entry_id.get()))
         self.label_solicitante = Label(self.nome, font='Times 12', text='Solicitante')
-        self.combo_box_solicitante = ttk.Combobox(self.nome,font='Arial 15', state="readonly")
-        self.combo_box_solicitante['values'] = ['Gemerson', 'Adilson', 'Gabriel']
+        self.message_solicitante = Label(self.nome,font='Arial 15', text='', bg='white', relief='sunken')
         # Label e combobox para solicitante
 
         # -------------------------------
@@ -212,7 +208,7 @@ class Att_req_tela():
         self.button_consultar.place(x=90, y=32, width=70, height=30)
         self.label_solicitante.place(x=170, y=10)
         obrigatorio(self.nome, 217, 10)
-        self.combo_box_solicitante.place(x=170, y=32, height=30, width=130)
+        self.message_solicitante.place(x=170, y=32, height=30, width=130)
 
 
 # ----------------------------------------------------------------------------------------------------
