@@ -72,7 +72,9 @@ class Nova_req_tela():
         # função para buscar o valor digitado e com isso fazer a conversão para o tipo float, independente se o valor for passado com vírgula ou ponto.
         def float_number(event):
             try:
-                if self.entry_preco.get() == '' or self.entry_quantidade.get() == '':
+                if self.entry_preco.get().isalpha() or self.entry_quantidade.get().isalpha() :
+                    self.message_total.config(text='Valores inválidos')
+                elif self.entry_preco.get() == '' or self.entry_quantidade.get() == '':
                     number_preco = 0
                     number_quantidade = 0
                 else:
@@ -106,33 +108,36 @@ class Nova_req_tela():
         # botao para salvar, no salvamento teremos algumas funções
         # função para salvar as informações 
         def Save_new_req(self):
-            dados = [[]]
-            dados[0].append(self.message_id['text'])
-            if self.combo_box_solicitante.get() == '':
-                messagebox.showinfo('Solicitante', 'Informe o solicitante')
+            if self.message_total['text'] == 'Valores inválidos':
+                messagebox.showinfo('Valor', 'Os valores informados não são válidos')
             else:
-                dados[0].append(self.combo_box_solicitante.get())
-            if self.combo_box_motorista.get() == '':
-                messagebox.showinfo('Motorista', 'Informe o motorista')
-            else:
-                dados[0].append(self.combo_box_motorista.get())
-            if self.combo_box_categoria.get() == '':
-                messagebox.showinfo('Categoria', 'Informe a categoria')
-            else:
-                dados[0].append(self.combo_box_categoria.get())
-            dados[0].append(self.entry_quantidade.get())
-            dados[0].append(self.entry_preco.get())
-            dados[0].append(self.message_total['text'])
-            dados[0].append(self.data_now['text'])
-            dados[0].append(self.campo_observacao.get(1.0, "end-1c"))
-            if len(dados[0]) == 9:
-                dados = pd.DataFrame(dados, columns=['ID', 'Solicitante', 'Motorista', 'Categoria', 'Quantidade', 'Preço Unitário', 'Total', 'Data', 'Observação'])
-                banco_de_dados_to_save = self.banco_de_dados.append(dados)
-                banco_de_dados_to_save.to_excel("banco_de_dados.xlsx", index=False)
-                messagebox.showinfo('', 'Requisição Salva')
-                self.button_imprimir = Button(self.nome, font='Times 12', text='Imprimir', relief='raised', borderwidth=3)
-                self.button_imprimir.place(x=390, y=450, width=70, height=30)
-        self.button_save = Button(self.nome, font='Times 12', text='Salvar', relief='raised', borderwidth=3, command= lambda: Save_new_req(self))
+                dados = [[]]
+                dados[0].append(self.message_id['text'])
+                if self.combo_box_solicitante.get() == '':
+                    messagebox.showinfo('Solicitante', 'Informe o solicitante')
+                else:
+                    dados[0].append(self.combo_box_solicitante.get())
+                if self.combo_box_motorista.get() == '':
+                    messagebox.showinfo('Motorista', 'Informe o motorista')
+                else:
+                    dados[0].append(self.combo_box_motorista.get())
+                if self.combo_box_categoria.get() == '':
+                    messagebox.showinfo('Categoria', 'Informe a categoria')
+                else:
+                    dados[0].append(self.combo_box_categoria.get())
+                dados[0].append(self.entry_quantidade.get())
+                dados[0].append(self.entry_preco.get())
+                dados[0].append(self.message_total['text'])
+                dados[0].append(self.data_now['text'])
+                dados[0].append(self.campo_observacao.get(1.0, "end-1c"))
+                if len(dados[0]) == 9:
+                    dados = pd.DataFrame(dados, columns=['ID', 'Solicitante', 'Motorista', 'Categoria', 'Quantidade', 'Preço Unitário', 'Total', 'Data', 'Observação'])
+                    banco_de_dados_to_save = self.banco_de_dados.append(dados)
+                    banco_de_dados_to_save.to_excel("banco_de_dados.xlsx", index=False)
+                    messagebox.showinfo('', 'Requisição Salva')
+                    self.button_imprimir = Button(self.nome, font='Times 12', text='Imprimir', relief='raised', borderwidth=3)
+                    self.button_imprimir.place(x=390, y=450, width=70, height=30)
+        self.button_save = Button(self.nome, font='Times 12', text='Salvar', relief='raised', borderwidth=3, command= lambda: Save_new_req(self) and self.entry_preco.bind("<Tab>", float_number))
         # botao para nova requisição, que irá limpar a tela e atualizar algumas informações
         # botão para dar um refresh na tela e cadastrar novos dados
         def refresh(self):
@@ -183,22 +188,110 @@ class Att_req_tela():
         # Label e entry para o id
         # função para consulta do banco
         def Consulta_banco(id):
-            self.banco = pd.read_excel(r'C:\Users\Gabriel\Desktop\Programação\Requisicao_combustivel\banco_de_dados.xlsx')
-            self.selecao = self.banco['ID'] == int(id)
-            self.consulta = self.banco[self.selecao]
-            self.solicitante = list(self.consulta['Solicitante'])
-            if str(self.solicitante[0]) == 'Gemerson':
-                self.message_solicitante.configure(text='Gemerson')
-            if str(self.solicitante[0]) == 'Adilson':
-                self.message_solicitante.configure(text='Adilson')
-            if str(self.solicitante[0]) == 'Gabriel':
-                self.message_solicitante.configure(text='Gabriel')
+            try:
+                self.banco = pd.read_excel(r'C:\Users\Gabriel\Desktop\Programação\Requisicao_combustivel\banco_de_dados.xlsx')
+                for coluna in self.banco:
+                    self.selecao = self.banco['ID'] == int(id)
+                    self.consulta = self.banco[self.selecao]
+                    self.solicitante = list(self.consulta[coluna])
+                    if coluna == 'Solicitante':
+                        if str(self.solicitante[0]) == 'Gemerson':
+                            self.message_solicitante.configure(text='Gemerson')
+                        if str(self.solicitante[0]) == 'Adilson':
+                            self.message_solicitante.configure(text='Adilson')
+                        if str(self.solicitante[0]) == 'Gabriel':
+                            self.message_solicitante.configure(text='Gabriel')
+                    if coluna == 'Motorista':
+                        if str(self.solicitante[0]) == 'Gemerson':
+                            self.message_motorista.configure(text='Gemerson')
+                        if str(self.solicitante[0]) == 'Adilson':
+                            self.message_motorista.configure(text='Adilson')
+                        if str(self.solicitante[0]) == 'Gabriel':
+                            self.message_motorista.configure(text='Gabriel')
+                    if coluna == 'Categoria':
+                        if str(self.solicitante[0]) == 'Gasolina':
+                            self.message_categoria.configure(text='Gasolina')
+                        if str(self.solicitante[0]) == 'Etanol':
+                            self.message_categoria.configure(text='Etanol')
+                        if str(self.solicitante[0]) == 'Filtro de óleo':
+                            self.message_categoria.configure(text='Filtro de óleo')
+                        if str(self.solicitante[0]) == 'Filtro de ar':
+                            self.message_categoria.configure(text='Filtro de ar')
+                    if coluna == 'Quantidade':
+                        self.entry_quantidade.delete(0, 'end')
+                        self.entry_quantidade.insert(END, self.solicitante[0])
+                    if coluna == 'Preço Unitário':
+                        self.entry_preco.delete(0, 'end')
+                        self.entry_preco.insert(END, self.solicitante[0])
+                    if coluna == 'Total':
+                        self.message_total.configure(text=self.solicitante[0])
+                    if coluna == 'Data':
+                        self.message_data.configure(text=self.solicitante[0])
+                    if coluna == 'Observação':
+                        self.campo_observacao.delete('1.0', END)
+                        if pd.isna(self.solicitante[0]):
+                            self.campo_observacao.insert(END, '')
+                        else:
+                            self.campo_observacao.insert(END, self.solicitante[0])
+            except:
+                messagebox.showinfo('ID', 'ID inválido, informe um ID válido')
+
+
         self.label_id = Label(self.nome, text='ID', font= 'Times 12')
         self.entry_id = Entry(self.nome, font='Arial 15', relief='sunken')
         self.button_consultar = Button(self.nome, text='Consultar', font= 'Times 12', relief='raised', borderwidth=3, command=lambda: Consulta_banco(self.entry_id.get()))
+        # label e message para solicitante
         self.label_solicitante = Label(self.nome, font='Times 12', text='Solicitante')
         self.message_solicitante = Label(self.nome,font='Arial 15', text='', bg='white', relief='sunken')
-        # Label e combobox para solicitante
+        # label e message para motorista
+        self.label_motorista = Label(self.nome, font='Times 12', text='Motorista')
+        self.message_motorista = Label(self.nome, font='Arial 15', text='', bg='white', relief='sunken')
+        # label e message para categoria
+        self.label_categoria = Label(self.nome, font='Times 12', text='Categoria')
+        self.message_categoria = Label(self.nome, font='Arial 15', text='', bg='white', relief='sunken')
+        # label e entry para quantidade
+        self.label_quantidade = Label(self.nome, font='Times 12', text='Quantidade')
+        self.entry_quantidade = Entry(self.nome, font='Arial 15', relief='sunken')
+        # label e entry para preço unitário
+        self.label_preco = Label(self.nome, font='Times 12', text='Preço')
+        self.entry_preco = Entry(self.nome, font='Arial 15', relief='sunken')
+        # função para verificar se o valor é válido
+        def float_number(event):
+            try:
+                if self.entry_preco.get().isalpha() or self.entry_quantidade.get().isalpha() :
+                    self.message_total.config(text='Valores inválidos')
+                elif self.entry_preco.get() == '' or self.entry_quantidade.get() == '':
+                    number_preco = 0
+                    number_quantidade = 0
+                else:
+                    if ',' in self.entry_quantidade.get():
+                        number_quantidade = atof(self.entry_quantidade.get())
+                    if ',' in self.entry_preco.get():
+                        number_preco = atof(self.entry_preco.get())
+                    if '.' in self.entry_preco.get():
+                        number_preco = float(self.entry_preco.get())
+                    if '.' in self.entry_quantidade.get():
+                        number_quantidade = float(self.entry_quantidade.get())
+                    if ',' not in self.entry_quantidade.get():
+                        number_quantidade = float(self.entry_quantidade.get())
+                    if ',' not in self.entry_preco.get():
+                        number_preco = float(self.entry_preco.get())
+                self.message_total.config(text=round(number_preco*number_quantidade, 2))
+            except Exception as e:
+                # usar o exception depois pra registrar possíveis bugs
+                self.message_total.config(text='Valores inválidos')
+        self.entry_preco.bind("<Tab>", float_number)
+        # label e message para total
+        self.label_total = Label(self.nome, font='Times 12', text='Total')
+        self.message_total = Label(self.nome, font='Arial 15', text='', relief='sunken', bg='white')
+        #label e message para data
+        self.label_data = Label(self.nome, font='Times 12', text='Data')
+        self.message_data = Label(self.nome, font='Arial 15', text='', bg='white', relief='sunken')
+        # label e text para observação
+        self.label_observacao = Label(self.nome, font='Times 12', text='Observação')
+        self.campo_observacao = Text(self.nome, font='Arial 12', relief='sunken', bg='white')
+        # botão salvar
+
 
         # -------------------------------
         # Posicionamento
@@ -207,8 +300,21 @@ class Att_req_tela():
         self.entry_id.place(x=10, y=32, width=70, height=30)
         self.button_consultar.place(x=90, y=32, width=70, height=30)
         self.label_solicitante.place(x=170, y=10)
-        obrigatorio(self.nome, 217, 10)
-        self.message_solicitante.place(x=170, y=32, height=30, width=130)
+        self.message_solicitante.place(x=170, y=32, height=30, width=150)
+        self.label_motorista.place(x=330, y=10, height=30)
+        self.message_motorista.place(x=330, y=32, height=30, width=150)
+        self.label_categoria.place(x=10, y=90, height=30)
+        self.message_categoria.place(x=10, y=112, height=30, width=150)
+        self.label_quantidade.place(x=170, y=90, height=30)
+        self.entry_quantidade.place(x=170, y=112, height=30, width=150)
+        self.label_preco.place(x=330, y=90, height=30)
+        self.entry_preco.place(x=330, y=112, height=30, width=150)
+        self.label_total.place(x=10, y=170, height=30)
+        self.message_total.place(x=10, y=192, height=30, width=150)
+        self.label_data.place(x=170, y=170, height=30)
+        self.message_data.place(x=170, y=192, height=30, width=150)
+        self.label_observacao.place(x=10, y=250, height=30)
+        self.campo_observacao.place(x=10, y=272, width=460, height=150)
 
 
 # ----------------------------------------------------------------------------------------------------
