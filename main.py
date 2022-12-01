@@ -180,6 +180,7 @@ class Nova_req_tela():
 # tela atualizar requisição
 class Att_req_tela():
     def __init__(self, nome):
+        self.banco_de_dados = pd.read_excel('banco_de_dados.xlsx', engine='openpyxl')
         self.nome = nome
         self.nome = Tk()
         self.nome.title('Atualizar Requisição')
@@ -219,10 +220,16 @@ class Att_req_tela():
                             self.message_categoria.configure(text='Filtro de ar')
                     if coluna == 'Quantidade':
                         self.entry_quantidade.delete(0, 'end')
-                        self.entry_quantidade.insert(END, self.solicitante[0])
+                        if pd.isna(self.solicitante[0]):
+                            pass
+                        else:
+                            self.entry_quantidade.insert(END, self.solicitante[0])
                     if coluna == 'Preço Unitário':
                         self.entry_preco.delete(0, 'end')
-                        self.entry_preco.insert(END, self.solicitante[0])
+                        if pd.isna(self.solicitante[0]):
+                            pass
+                        else:
+                            self.entry_preco.insert(END, self.solicitante[0])
                     if coluna == 'Total':
                         self.message_total.configure(text=self.solicitante[0])
                     if coluna == 'Data':
@@ -235,11 +242,16 @@ class Att_req_tela():
                             self.campo_observacao.insert(END, self.solicitante[0])
             except:
                 messagebox.showinfo('ID', 'ID inválido, informe um ID válido')
+        def Get_valores_iniciais(id):
+                self.banco = pd.read_excel(r'C:\Users\Gabriel\Desktop\Programação\Requisicao_combustivel\banco_de_dados.xlsx')
+                global valores_iniciais
+                valores_iniciais = ((self.banco[self.banco['ID'] == int(id)]).values).tolist()
+                
 
 
         self.label_id = Label(self.nome, text='ID', font= 'Times 12')
         self.entry_id = Entry(self.nome, font='Arial 15', relief='sunken')
-        self.button_consultar = Button(self.nome, text='Consultar', font= 'Times 12', relief='raised', borderwidth=3, command=lambda: Consulta_banco(self.entry_id.get()))
+        self.button_consultar = Button(self.nome, text='Consultar', font= 'Times 12', relief='raised', borderwidth=3, command=lambda: [Consulta_banco(self.entry_id.get()), Get_valores_iniciais(self.entry_id.get())])
         # label e message para solicitante
         self.label_solicitante = Label(self.nome, font='Times 12', text='Solicitante')
         self.message_solicitante = Label(self.nome,font='Arial 15', text='', bg='white', relief='sunken')
@@ -290,7 +302,28 @@ class Att_req_tela():
         # label e text para observação
         self.label_observacao = Label(self.nome, font='Times 12', text='Observação')
         self.campo_observacao = Text(self.nome, font='Arial 12', relief='sunken', bg='white')
+        # função para salvar
+        def Save_new_req(self):
+            if self.message_total['text'] == 'Valores inválidos':
+                messagebox.showinfo('Valor', 'Os valores informados não são válidos')
+            else:
+                dados = [[]]
+                dados[0].append(self.entry_id.get())
+                dados[0].append(self.message_solicitante['text'])
+                dados[0].append(self.message_motorista['text'])
+                dados[0].append(self.message_categoria['text'])
+                dados[0].append(self.entry_quantidade.get())
+                dados[0].append(self.entry_preco.get())
+                dados[0].append(self.message_total['text'])
+                dados[0].append(self.message_data['text'])
+                dados[0].append(self.campo_observacao.get(1.0, "end-1c"))
+                if len(dados[0]) == 9:
+                    dados = pd.DataFrame(dados, columns=['ID', 'Solicitante', 'Motorista', 'Categoria', 'Quantidade', 'Preço Unitário', 'Total', 'Data', 'Observação'])
+                    dados.query(f'ID == {self.entry_id.get()}').replace(valores_iniciais[0], [dados], inplace=True)
+                    dados.to_excel("banco_de_dados.xlsx", index=False)
+                    messagebox.showinfo('', 'Requisição Atualizada')
         # botão salvar
+        self.button_salvar = Button(self.nome, text='Salvar', font='Times 12', relief='raised', borderwidth=3, command= lambda: Save_new_req(self) and self.entry_preco.bind("<Tab>", float_number))
 
 
         # -------------------------------
@@ -315,6 +348,7 @@ class Att_req_tela():
         self.message_data.place(x=170, y=192, height=30, width=150)
         self.label_observacao.place(x=10, y=250, height=30)
         self.campo_observacao.place(x=10, y=272, width=460, height=150)
+        self.button_salvar.place(x=10, y=450, width=70, height=30)
 
 
 # ----------------------------------------------------------------------------------------------------
