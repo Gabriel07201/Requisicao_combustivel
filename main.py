@@ -241,17 +241,11 @@ class Att_req_tela():
                         else:
                             self.campo_observacao.insert(END, self.solicitante[0])
             except:
-                messagebox.showinfo('ID', 'ID inválido, informe um ID válido')
-        def Get_valores_iniciais(id):
-                self.banco = pd.read_excel(r'C:\Users\Gabriel\Desktop\Programação\Requisicao_combustivel\banco_de_dados.xlsx')
-                global valores_iniciais
-                valores_iniciais = ((self.banco[self.banco['ID'] == int(id)]).values).tolist()
-                
-
+                messagebox.showinfo('ID', 'ID inválido, informe um ID válido')                
 
         self.label_id = Label(self.nome, text='ID', font= 'Times 12')
         self.entry_id = Entry(self.nome, font='Arial 15', relief='sunken')
-        self.button_consultar = Button(self.nome, text='Consultar', font= 'Times 12', relief='raised', borderwidth=3, command=lambda: [Consulta_banco(self.entry_id.get()), Get_valores_iniciais(self.entry_id.get())])
+        self.button_consultar = Button(self.nome, text='Consultar', font= 'Times 12', relief='raised', borderwidth=3, command=lambda: Consulta_banco(self.entry_id.get()))
         # label e message para solicitante
         self.label_solicitante = Label(self.nome, font='Times 12', text='Solicitante')
         self.message_solicitante = Label(self.nome,font='Arial 15', text='', bg='white', relief='sunken')
@@ -304,7 +298,7 @@ class Att_req_tela():
         self.campo_observacao = Text(self.nome, font='Arial 12', relief='sunken', bg='white')
         # função para salvar
         def Save_new_req(self):
-            float_number
+            float_number(self)
             self.banco_de_dados = pd.read_excel('banco_de_dados.xlsx', engine='openpyxl')
             if self.message_total['text'] == 'Valores inválidos':
                 messagebox.showinfo('Valor', 'Os valores informados não são válidos')
@@ -313,14 +307,14 @@ class Att_req_tela():
                 self.banco_de_dados.loc[condicao, 'Quantidade'] = self.entry_quantidade.get()
                 self.banco_de_dados.loc[condicao, 'Preço Unitário'] = self.entry_preco.get()
                 self.banco_de_dados.loc[condicao, 'Observação'] = self.campo_observacao.get(1.0, "end-1c")
-                if self.message_total['text'] == '':
+                try:
                     self.banco_de_dados.loc[condicao, 'Total'] = (int(self.entry_quantidade.get()) * int(self.entry_preco.get()))
-                else:
+                except:
                     self.banco_de_dados.loc[condicao, 'Total'] = self.message_total['text']
                 self.banco_de_dados.to_excel("banco_de_dados.xlsx", index=False)
                 messagebox.showinfo('', 'Requisição Atualizada')
         # botão salvar
-        self.button_salvar = Button(self.nome, text='Salvar', font='Times 12', relief='raised', borderwidth=3, command= lambda: Save_new_req(self) and  float_number)
+        self.button_salvar = Button(self.nome, text='Salvar', font='Times 12', relief='raised', borderwidth=3, command= lambda: Save_new_req(self))
 
 
         # -------------------------------
