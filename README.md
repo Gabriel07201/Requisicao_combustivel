@@ -3,9 +3,9 @@
 Programa criado com python usando a biblioteca tkinter como interface. 
 A função é servir para fazer requisições de abastecimento. Não somente isso também registrar e atualizar elas, com a possibilidade de criação de relatórios, para acompanhamento econferência.
 Necessidades do aplicativo:
-- Login:
-    usuario 
-    senha
+- Login:  
+    usuario   
+    senha  
 - Tela Principal
     Nova Requisão
     Atualizar requisição

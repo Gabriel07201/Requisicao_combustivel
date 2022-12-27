@@ -5,7 +5,11 @@ from datetime import date
 # biblioteca penas para conversão de vírgula para ponto
 from locale import atof, setlocale, LC_NUMERIC
 import pandas as pd
-
+# biblioteca para gerar o pdf
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 # ----------------------------------------------------------------------------------------------------
 # configs
 setlocale(LC_NUMERIC, '')
@@ -58,7 +62,7 @@ class Nova_req_tela():
         # label e combo box motorista
         self.label_motorista = Label(self.nome, font='Times 12', text='Motorista')
         self.combo_box_motorista = ttk.Combobox(self.nome, font='Arial 15', state="readonly")
-        self.combo_box_motorista['values'] = ['Gemerson', 'Adilson', 'Gabriel']
+        self.combo_box_motorista['values'] = ['Gemerson', 'Adilson', 'Gabriel', 'Vale combustível']
         # label e combo box categoria
         self.label_categoria = Label(self.nome, font='Times 12', text='Categoria')
         self.combo_box_categoria = ttk.Combobox(self.nome, font='Arial 15', state='readonly')
@@ -127,10 +131,11 @@ class Nova_req_tela():
                     dados[0].append(self.combo_box_categoria.get())
                 dados[0].append(self.entry_quantidade.get())
                 dados[0].append(self.entry_preco.get())
-                dados[0].append(self.message_total['text'])
+                dados[0].append(str(self.message_total['text']))
                 dados[0].append(self.data_now['text'])
-                dados[0].append(self.campo_observacao.get(1.0, "end-1c"))
+                dados[0].append(self.campo_observacao.get(1.0, "end-1c")) 
                 if len(dados[0]) == 9:
+                    PDF(dados[0][0], dados[0][7], dados[0][1], dados[0][2], dados[0][3], dados[0][4], dados[0][5], dados[0][6], dados[0][8])                    
                     dados = pd.DataFrame(dados, columns=['ID', 'Solicitante', 'Motorista', 'Categoria', 'Quantidade', 'Preço Unitário', 'Total', 'Data', 'Observação'])
                     banco_de_dados_to_save = self.banco_de_dados.append(dados)
                     banco_de_dados_to_save.to_excel("banco_de_dados.xlsx", index=False)
@@ -209,6 +214,8 @@ class Att_req_tela():
                             self.message_motorista.configure(text='Adilson')
                         if str(self.solicitante[0]) == 'Gabriel':
                             self.message_motorista.configure(text='Gabriel')
+                        if str(self.solicitante[0]) == 'Vale combustível':
+                            self.message_motorista.configure(text='Vale combustível')
                     if coluna == 'Categoria':
                         if str(self.solicitante[0]) == 'Gasolina':
                             self.message_categoria.configure(text='Gasolina')
@@ -391,7 +398,38 @@ def label_moeda(master, posx, posy, width):
     label_moeda = Label(master, text='R$', font='Arial 15')
     label_moeda.place(x=posx, y=posy, width=width)
 
-        
+
+# Gerar pdf
+def PDF(id_req, data, solicitante, motorista, categoria, qtd, preco_unt, total, observacao):
+    teste = str(id_req)
+    cnv = canvas.Canvas(fr'C:\Users\Gabriel\Desktop\Programação\Requisicao_combustivel\pdfs\req_{teste}.pdf', pagesize=A4)
+    cnv.drawImage(r'C:\Users\Gabriel\Desktop\Programação\Requisicao_combustivel\Layout\imagens\WhatsApp Image 2022-12-06 at 20.27.54.jpeg', 0, 150, width = 550, height =700)
+    pdfmetrics.registerFont(TTFont('Times', 'Times.ttf'))
+    cnv.setFont('Times', 10)
+    # parte superior do pdf
+    cnv.drawString(33, 825, str(id_req))
+    cnv.drawString(40,788, str(data))
+    cnv.drawString(60,769, str(solicitante))
+    cnv.drawString(55, 749, str(motorista))
+    cnv.drawString(57, 717, str(categoria))
+    cnv.drawString(48, 698, str(qtd))
+    cnv.drawString(57, 678, str(preco_unt))
+    cnv.drawString(42, 658, str(total))
+    cnv.drawString(15, 622, str(observacao))
+
+    # parte inferior do pdf
+    cnv.drawString(33, 468, str(id_req))
+    cnv.drawString(40,431, str(data))
+    cnv.drawString(60,411, str(solicitante))
+    cnv.drawString(55, 391, str(motorista))
+    cnv.drawString(57, 360, str(categoria))
+    cnv.drawString(48, 340, str(qtd))
+    cnv.drawString(57, 320, str(preco_unt))
+    cnv.drawString(42, 300, str(total))
+    cnv.drawString(15, 264, str(observacao))
+
+    cnv.save()
+
 
 # ----------------------------------------------------------------------------------------------------
 # criando tela de login
